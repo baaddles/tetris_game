@@ -5,6 +5,10 @@ int main(int, char**){
     printf("Modif Test !!\n");
     printf("Encore, ca fait beaucoup la non ?");
 
+    for (int k = 0 ; k < 3 ; k++){
+        printf("Caca numéro %d.\n",k);
+    }
+
     printf("Test encore.\n");
     printf("\n");
 
