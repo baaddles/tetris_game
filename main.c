@@ -9,11 +9,7 @@ int main(int, char**){
     for (int k = 0 ; k < 3 ; k++){
         printf("Caca numéro %d.\n",k);
     }
-
-    for (int k = 0 ; k < 3 ; k++){
-        printf("Caca numéro %d.\n",k);
-    }
-
+    
     printf("Test encore.\n");
     printf("\n");
 
