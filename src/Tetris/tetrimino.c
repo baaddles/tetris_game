@@ -106,15 +106,36 @@ void TetriminoHide(WINDOW *win, t_tetrimino *tetrimino){
 }
 
 bool TetriminoCanFit(t_tetrimino *tetrimino, int yMax, int xMin, int xMax){
-    if (tetrimino->location.x < xMax && tetrimino->location.x > xMin && tetrimino->location.y < yMax){
-        return true;
+    for (int k = 0 ; k < TETRIS_TETRIMINO_SIZE_YX ; k++){
+        int locY = tetrimino->location.y + TETRIMINO_SHAPES[tetrimino->shape - 1][tetrimino->orientation][k].y;
+        int locX = tetrimino->location.x + TETRIMINO_SHAPES[tetrimino->shape - 1][tetrimino->orientation][k].x * TETRIS_TETRIMINO_SCALE_X;
+
+        if (locY < 1 || locY >= (yMax - 1)){
+            return false;
+        }
+        if (locX < 2 || locX >= (xMax * TETRIS_TETRIMINO_SCALE_X)){
+            return false;
+        }
     }
-    else return false;
+    return true;
 }
 
 void TetriminoCenter(t_tetrimino *tetrimino, int width, int height){
     tetrimino->location.y = 1;
-    tetrimino->location.x = (width / 2);
+    tetrimino->location.x = (width / 2) + 2;
+}
+
+void TetriminoSwitch(t_tetrimino *tetriA, t_tetrimino *tetriB){
+    t_tetrimino temp = *tetriA;
+    *tetriA = *tetriB;
+    *tetriB = temp;
+}
+
+void TetriminoRota(t_tetrimino *tetrimino){
+    tetrimino->orientation++;
+    if (tetrimino->orientation >= TETRIS_TETRIMINO_ORIENTATIONS){
+        tetrimino->orientation = 0;
+    }
 }
 
 /*[] End of file */
