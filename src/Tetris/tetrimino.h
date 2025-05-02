@@ -35,5 +35,7 @@ void TetriminoHide(WINDOW*win, t_tetrimino *tetrimino);
 bool TetriminoCanFit(t_tetrimino *tetrimino, int yMax, int xMin, int xMax);
 void TetriminoToTable(t_tetrimino *tetrimino, char *table, int nRow, int nCol);
 void TetriminoCenter(t_tetrimino *tetrimino, int width, int height);
+void TetriminoSwitch(t_tetrimino *tetriA, t_tetrimino *tetriB);
+void TetriminoRota(t_tetrimino *tetrimino);
 
 #endif
