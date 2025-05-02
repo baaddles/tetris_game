@@ -63,7 +63,6 @@ void TetrisInit(void){
     box(wDisplay, 0, 0);
 }
 
-
 void TetrisClose(void){
     wclear(stdscr);
     endwin();
@@ -75,6 +74,27 @@ void TetrisTetriminoRand(t_tetrimino *tetrimino){
     tetrimino->orientation = 0;
     tetrimino->location.y = TETRIS_BOARD_Y;
     tetrimino->location.x = TETRIS_BOARD_WIDTH / 2 + 2;
+}
+
+void TetrisHold(void){
+    if (tetriHold.shape  == SHAPE_NONE && tetrimino.shape != SHAPE_NONE){
+        TetriminoHide(wHold, &tetriHold);
+        TetriminoHide(wBoard, &tetrimino);
+        TetriminoSwitch(&tetrimino, &tetriHold);
+        TetriminoCenter(&tetriHold, TETRIS_HOLD_WIDTH, TETRIS_HOLD_HEIGHT);
+        TetriminoDraw(wHold, &tetriHold);
+        dBoard = 0;
+    }
+
+    if (tetriHold.shape != SHAPE_NONE && tetrimino.shape != SHAPE_NONE){
+        TetriminoHide(wBoard, &tetrimino);
+        TetriminoHide(wHold, &tetriHold);
+        TetriminoSwitch(&tetrimino, &tetriHold);
+        TetriminoCenter(&tetrimino, TETRIS_BOARD_WIDTH, TETRIS_BOARD_HEIGHT);
+        TetriminoDraw(wBoard, &tetrimino);
+        TetriminoCenter(&tetriHold, TETRIS_HOLD_WIDTH, TETRIS_HOLD_HEIGHT);
+        TetriminoDraw(wHold, &tetriHold);
+    }
 }
 
 void TetrisDraw(void){
@@ -103,33 +123,49 @@ void TetrisDraw(void){
     wrefresh(wDisplay);
 }
 
-void TetrisDown(t_tetrimino *tetrimino){
-    tetrimino->location.y+=1;
-}
-
 void TetrisOnKey(int key){
     switch (key){
     case KEY_DOWN:
         TetriminoHide(wBoard, &tetrimino);
-        if (TetriminoCanFit(&tetrimino, TETRIS_BOARD_HEIGHT, 0, TETRIS_BOARD_WIDTH)){
-            TetrisDown(&tetrimino);
+        tetrimino.location.y += 1;
+        if (!TetriminoCanFit(&tetrimino, TETRIS_BOARD_HEIGHT, 0, TETRIS_BOARD_WIDTH)){
+            tetrimino.location.y -= 1;
         }
         TetriminoDraw(wBoard, &tetrimino);
         break;
     case KEY_UP:
-
+        TetriminoHide(wBoard, &tetrimino);
+        int rotaTemp = tetrimino.orientation;
+        TetriminoRota(&tetrimino);
+        if (!TetriminoCanFit(&tetrimino, TETRIS_BOARD_HEIGHT, 0, TETRIS_BOARD_WIDTH)){
+            tetrimino.orientation = rotaTemp;
+        }
+        TetriminoDraw(wBoard, &tetrimino);
         break;
     case KEY_LEFT:
-
+        TetriminoHide(wBoard, &tetrimino);
+        tetrimino.location.x -= 2;
+        if (!TetriminoCanFit(&tetrimino, TETRIS_BOARD_HEIGHT, 0, TETRIS_BOARD_WIDTH)){
+            tetrimino.location.x += 2;
+        }
+        TetriminoDraw(wBoard, &tetrimino);
         break;
     case KEY_RIGHT:
-
+    TetriminoHide(wBoard, &tetrimino);
+    tetrimino.location.x += 2;
+        if (!TetriminoCanFit(&tetrimino, TETRIS_BOARD_HEIGHT, 0, TETRIS_BOARD_WIDTH)){
+            tetrimino.location.x -= 2;
+        }
+        TetriminoDraw(wBoard, &tetrimino);
         break;
-    case SPACEBAR:
+    case KEY_S:
         if (dBoard){
             TetriminoHide(wBoard, &tetrimino);
             dBoard = 0;
         }
+        break;
+    case SPACEBAR:
+        TetrisHold();
         break;
     default:
         break;
